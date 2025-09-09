@@ -8,10 +8,152 @@ export default function Lab1() {
   Text documents are often broken up into several sections and subsections. Each section is usually prefaced with a short title or heading that attempts to summarize the topic of the section it precedes. For instance this paragraph is preceded by the heading Heading Tags. The font of the section headings are usually larger and bolder than their subsection headings. This document uses headings to introduce topics such as HTML Documents, HTML Tags, Heading Tags, etc. HTML heading tags can be used to format plain text so that it renders in a browser as large headings. There are 6 heading tags for different sizes: h1, h2, h3, h4, h5, and h6. Tag h1 is the largest heading and h6 is the smallest heading.
         </div>
         <h3>HTML Examples</h3>
-        <div id="wd-h-tag"> </div>
-        <div id="wd-p-tag"> </div>
-            <h4>Paragraph Tag</h4>
 
+        <div id="wd-h-tag"> 
+            <h4>Lab 1.2 - Paragraphs</h4>
+        </div>
+        <div id="wd-p-tag">
+        <h4>Paragraph Tag</h4>
+        <p id="wd-p-1"> ... </p>
+            <p id="wd-p-2">
+                This is the first paragraph. The paragraph tag is used to format
+                vertical gaps between long pieces of text like this one.
+            </p>
+            <p id="wd-p-3">
+                This is the second paragraph. Even though there is a deliberate white
+                gap between the paragraph above and this paragraph, by default
+                browsers render them as one contiguous piece of text as shown here on
+                the right.
+            </p>
+            <p id="wd-p-4">
+                This is the third paragraph. Wrap each paragraph with the paragraph
+                tag to tell browsers to render the gaps.
+        </p>
+
+        <div id="wd-h-tag"> 
+            <h4>Lab 1.3 - Lists</h4>
+        </div>
+        <div id="wd-lists">
+            <h4>List Tags</h4>
+            <h5>Ordered List Tag</h5>
+            My favorite recipe:
+            How to make delicious delicious pumpkin bread...
+            <ol id="wd-pumpinbread"> 
+                <li>Mix sugar and flour.</li>
+                <li>Add eggs and pumpkin puree.</li>
+                <li>Stir to combine.</li>
+                <li>Bake at 800 degrees for 20 hourse.</li>
+                <li>Serve and enjoy the charcoal produced!</li>
+            </ol>
+            <h5>Unordered List Tag</h5>
+            My favorite books (in no particular order)
+                <ul id="wd-my-books">
+                    <li>Dune</li>
+                    <li>Lord of the Rings</li>
+                    <li>Ender's Game</li>
+                    <li>Red Mars</li>
+                    <li>The Forever War</li>
+            </ul>
+            Your favorite books (in no particular order)
+                <ul id="wd-your-books">
+                    <li>Tomorrow and Tomorrow and Tomorrow</li>
+                    <li>The Snake King</li>
+                    <li>Paradise Lost</li>
+                    <li>Dantes Inferno</li>
+                    <li>The great autobiography of Dani Valentine!!!!</li>
+            </ul>
         
+        <div id="wd-h-tag"> 
+            <h4>Lab 1.4 - Tables</h4>
+        </div>
+        <div id="wd-tables">
+        <h4>Table Tag</h4>
+        <table border={1} width="100%">
+          <thead>
+            <tr>
+              <th>Quiz</th>
+              <th>Topic</th>
+              <th>Date</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Q1</td>
+              <td>HTML</td>
+              <td>2/3/21</td>
+              <td>85</td>
+            </tr>
+            <tr>
+              <td>Q2</td>
+              <td>CSS</td>
+              <td>2/10/21</td>
+              <td>90</td>
+            </tr>
+            <tr>
+              <td>Q3</td>
+              <td>JS</td>
+              <td>3/10/21</td>
+              <td>91</td>
+            </tr>
+            <tr>
+              <td>Q4</td>
+              <td>C++</td>
+              <td>4/10/21</td>
+              <td>92</td>
+            </tr>
+            <tr>
+              <td>Q5</td>
+              <td>C#</td>
+              <td>5/10/21</td>
+              <td>93</td>
+            </tr>
+            <tr>
+              <td>Q6</td>
+              <td>C</td>
+              <td>6/10/21</td>
+              <td>94</td>
+            </tr>
+            <tr>
+              <td>Q7</td>
+              <td>Java</td>
+              <td>7/10/21</td>
+              <td>95</td>
+            </tr>
+            <tr>
+              <td>Q8</td>
+              <td>Python</td>
+              <td>8/10/21</td>
+              <td>96</td>
+            </tr>
+            <tr>
+              <td>Q9</td>
+              <td>Swift</td>
+              <td>9/10/21</td>
+              <td>83</td>
+            </tr>
+            <tr>
+              <td>Q10</td>
+              <td>Kotlin</td>
+              <td>1/1/25</td>
+              <td>15</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={3}>Average</td>
+              <td>90</td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
+
+        </div>
+
+        <div id="wd-h-tag"> 
+            <h4>Lab 1.4</h4>
+        </div>
+
+      </div>
+    </div>
   );}
