@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 export default function KambazNavigation() {
   return (
     <div id="wd-kambaz-navigation">
