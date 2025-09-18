@@ -1,5 +1,5 @@
 import { redirect } from "next/dist/client/components/navigation";
 
-export default function AccountPage() {
+export default function Account() {
  redirect("/Account/Signin");
 }

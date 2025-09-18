@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import CourseNavigation from "./Navigation";
+import CourseNavigation from "./navigation";
 export default async function CoursesLayout(
   { children, params }: Readonly<{ children: ReactNode; params: Promise<{ id: string }> }>) {
  const { cid } = await params;
