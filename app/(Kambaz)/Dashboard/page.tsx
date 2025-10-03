@@ -1,86 +1,122 @@
 import Link from "next/link";
-import Image from "next/image";
+import { Card, CardBody, CardTitle, CardText, CardImg, Button, Row, Col } from "react-bootstrap";
+
 export default function Dashboard() {
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
-      <h2 id="wd-dashboard-published">Published Courses (12)</h2> <hr />
-      <div id="wd-dashboard-courses">
-        <div className="wd-dashboard-course">
-          <Link href="/Courses/100" className="wd-dashboard-course-link">
-            <Image src="/images/hollowKnight.jpg" width={200} height={150} alt="Hollow Knight image"/>
-            <div>
-              <h5> HK100</h5>
-              <p className="wd-dashboard-course-title">
-                Introduction to Hollow Knight{" "}
-              </p>
-              <button> Go </button>
-            </div>
-          </Link>
-          <Link href="/Courses/200" className="wd-dashboard-course-link">
-            <Image src="/images/silkSong.jpg" width={200} height={150} alt="Silksong image"/>
-            <div>
-              <h5> HK200</h5>
-              <p className="wd-dashboard-course-title">
-                Foundations of Silksong{" "}
-              </p>
-              <button> Go </button>
-            </div>
-          </Link>
-          <Link href="/Courses/300" className="wd-dashboard-course-link">
-            <Image src="/images/clairObscur.jpg" width={200} height={150} alt="Clair Obscur image"/>
-            <div>
-              <h5> CO300</h5>
-              <p className="wd-dashboard-course-title">
-                Introduction to Clair Obscur{" "}
-              </p>
-              <button> Go </button>
-            </div>
-          </Link>
-          <Link href="/Courses/400" className="wd-dashboard-course-link">
-            <Image src="/images/marioGalaxy.jpg" width={200} height={150} alt="Mario Galaxy image"/>
-            <div>
-              <h5> MG400</h5>
-              <p className="wd-dashboard-course-title">
-                Mario Galaxy Fundementals{" "}
-              </p>
-              <button> Go </button>
-            </div>
-          </Link>
-          <Link href="/Courses/500" className="wd-dashboard-course-link">
-            <Image src="/images/balatro.jpg" width={200} height={150} alt="Balatro image"/>
-            <div>
-              <h5> BA500</h5>
-              <p className="wd-dashboard-course-title">
-                Introduction to Balatro{" "}
-              </p>
-              <button> Go </button>
-            </div>
-          </Link>
-          <Link href="/Courses/600" className="wd-dashboard-course-link">
-            <Image src="/images/stardewValley.jpg" width={200} height={150} alt="Stardew Valley image"/>
-            <div>
-              <h5> SV600</h5>
-              <p className="wd-dashboard-course-title">
-                Advanced Stardew Valley{" "}
-              </p>
-              <button> Go </button>
-            </div>
-          </Link>
-          <Link href="/Courses/700" className="wd-dashboard-course-link">
-            <Image src="/images/terraria.jpg" width={200} height={150} alt="Stardew Valley image"/>
-            <div>
-              <h5> TE700</h5>
-              <p className="wd-dashboard-course-title">
-                Advanced Terraria{" "}
-              </p>
-              <button> Go </button>
-            </div>
-          </Link>
+      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <hr />
+      <h2 id="wd-dashboard-published">Published Courses (7)</h2>
+      <hr />
+      <div id="wd-dashboard-courses" className="ps-3">
+        <Row xs={1} md={5} className="g-4">
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link href="/Courses/100" className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg variant="top" src="/images/hollowKnight.jpg" style={{ height: 160 }} />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title">HK100 Introduction to Hollow Knight</CardTitle>
+                  <CardText className="wd-dashboard-course-title overflow-y-hidden" style={{ maxHeight: 100 }}>
+                    Come play Hollow Knight!
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
 
-        </div>
-        <div className="wd-dashboard-course"> ... </div>
-        <div className="wd-dashboard-course"> ... </div>
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link href="/Courses/200" className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg variant="top" src="/images/silkSong.jpg" style={{ height: 160 }} />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title">HK200 Foundations of Silksong</CardTitle>
+                  <CardText className="wd-dashboard-course-title overflow-y-hidden" style={{ maxHeight: 100 }}>
+                    Come play Silksong!
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link href="/Courses/300" className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg variant="top" src="/images/clairObscur.jpg" style={{ height: 160 }} />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title">CO300 Introduction to Clair Obscur</CardTitle>
+                  <CardText className="wd-dashboard-course-title overflow-y-hidden" style={{ maxHeight: 100 }}>
+                    Come play Clair Obscur!
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link href="/Courses/400" className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg variant="top" src="/images/marioGalaxy.jpg" style={{ height: 160 }} />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title">MG400 Mario Galaxy Fundamentals</CardTitle>
+                  <CardText className="wd-dashboard-course-title overflow-y-hidden" style={{ maxHeight: 100 }}>
+                    Come play Mario Galaxy!
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link href="/Courses/500" className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg variant="top" src="/images/balatro.jpg" style={{ height: 160 }} />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title">BA500 Introduction to Balatro</CardTitle>
+                  <CardText className="wd-dashboard-course-title overflow-y-hidden" style={{ maxHeight: 100 }}>
+                    Come play Balatro!
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link href="/Courses/600" className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg variant="top" src="/images/stardewValley.jpg" style={{ height: 160 }} />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title">SV600 Advanced Stardew Valley</CardTitle>
+                  <CardText className="wd-dashboard-course-title overflow-y-hidden" style={{ maxHeight: 100 }}>
+                    Come play Stardew Valley!
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+          <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              <Link href="/Courses/700" className="wd-dashboard-course-link text-decoration-none text-dark">
+                <CardImg variant="top" src="/images/terraria.jpg" style={{ height: 160 }} />
+                <CardBody>
+                  <CardTitle className="wd-dashboard-course-title">TE700 Advanced Terraria</CardTitle>
+                  <CardText className="wd-dashboard-course-title overflow-y-hidden" style={{ maxHeight: 100 }}>
+                    Come play Terraria!
+                  </CardText>
+                  <Button variant="primary">Go</Button>
+                </CardBody>
+              </Link>
+            </Card>
+          </Col>
+
+        </Row>
       </div>
     </div>
-);}
+  );
+}
