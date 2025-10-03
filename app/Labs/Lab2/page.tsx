@@ -1,20 +1,30 @@
 import "./index.css";
-import ForegroundColors from "./ForegroundColors.tsx";
-import BackgroundColors from "./BackgroundColors.tsx";
-import Borders from "./Borders.tsx";
-import Padding from "./Padding.tsx";
-import Margins from "./Margins.tsx";
-import Corners from "./Corners.tsx";
-import Dimensions from "./Dimensions.tsx";
-import Positions from "./Positions.tsx";
-import Zindex from "./Zindex.tsx"
-import Float from "./Float.tsx";
-import GridLayout from "./GridLayout.tsx";
-import Flex from "./Flex.tsx";
+import ForegroundColors from "./ForegroundColors";
+import BackgroundColors from "./BackgroundColors";
+import Borders from "./Borders";
+import Padding from "./Padding";
+import Margins from "./Margins";
+import Corners from "./Corners";
+import Dimensions from "./Dimensions";
+import Positions from "./Positions";
+import Zindex from "./Zindex"
+import Float from "./Float";
+import GridLayout from "./GridLayout";
+import Flex from "./Flex";
+import ReactIconsSampler from "./ReactIcons";
+import Container from 'react-bootstrap/Container';
+import BootstrapGrids from "./BootstrapGrids";
+import ScreenSizeLabel from "./ScreenSizeLabel";
+import BootstrapTables from "./BootstrapTables";
+import BootstrapLists from "./BootstrapLists";
+import BootstrapForms from "./BootstrapForms"
+import BootstrapNavigation from "./BootstrapNavigation";
+
 
 export default function Lab2() {
   return (
-    <div id="wd-lab2">
+    <Container>
+      <div id="wd-lab2"></div>
       <h2>Lab 2 - Cascading Style Sheets</h2>
       <h3>Styling with the STYLE attribute</h3>
       <div id="wd-css-id-selectors">
@@ -75,6 +85,14 @@ Here's another paragraph using a different ID and a different look and
     <Flex />
   </div>
 
-
-
-</div>);}
+    <div>
+      <ReactIconsSampler/>
+      <BootstrapGrids/>
+      <ScreenSizeLabel/>
+      <BootstrapTables/>
+      <BootstrapLists/>
+      <BootstrapForms/>
+      <BootstrapNavigation/>
+    </div>
+  </Container>
+)}
