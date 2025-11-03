@@ -1,33 +1,50 @@
 import Link from "next/link";
 import * as db from "../Database";
-import { Card, CardBody, CardImg, CardText, CardTitle, Button, Row, Col } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Dashboard() {
   const courses = db.courses;
+  
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
-      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
-      <div id="wd-dashboard-courses">
-        <Row xs={1} md={5} className="g-4">
-          {courses.map((course) => (
-            <Col className="wd-dashboard-course" style={{ width: "300px" }}>
-              <Card>
-                <Link href={`/Courses/${course._id}/Home`}
-                      className="wd-dashboard-course-link text-decoration-none text-dark" >
-                  <CardImg src="/images/reactjs.jpg" variant="top" width="100%" height={160} />
-                  <CardBody className="card-body">
-                    <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                      {course.name} </CardTitle>
-                    <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                      {course.description} </CardText>
-                    <Button variant="primary"> Go </Button>
-                  </CardBody>
-                </Link>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <hr />
+      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+      <hr />
+      <div id="wd-dashboard-courses" className="row row-cols-1 row-cols-md-5 g-4">
+        {courses.map((course) => (
+          <div 
+            key={course._id}
+            className="wd-dashboard-course col" 
+            style={{ width: "300px" }}
+          >
+            <Link 
+              href={`/Courses/${course._id}/Home`}
+              className="text-decoration-none"
+            >
+              <div className="card" style={{ cursor: "pointer" }}>
+                <img 
+                  src={course.image || "/images/reactjs.jpg"} 
+                  className="card-img-top"
+                  alt={course.name}
+                  style={{ height: "160px", objectFit: "cover" }}
+                />
+                <div className="card-body">
+                  <h5 className="card-title wd-dashboard-course-title text-nowrap overflow-hidden text-dark">
+                    {course.name}
+                  </h5>
+                  <p 
+                    className="card-text wd-dashboard-course-description overflow-hidden text-muted" 
+                    style={{ height: "53px" }}
+                  >
+                    {course.description}
+                  </p>
+                  <button className="btn btn-primary">Go</button>
+                </div>
+              </div>
+            </Link>
+          </div>
+        ))}
       </div>
-    </div>);}
+    </div>
+  );
+}
