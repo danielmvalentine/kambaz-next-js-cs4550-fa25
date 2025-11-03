@@ -11,7 +11,7 @@ export default function Dashboard() {
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
       <hr />
       <div id="wd-dashboard-courses" className="row row-cols-1 row-cols-md-5 g-4">
-        {courses.map((course) => (
+        {courses.map((course: any) => (
           <div 
             key={course._id}
             className="wd-dashboard-course col" 
