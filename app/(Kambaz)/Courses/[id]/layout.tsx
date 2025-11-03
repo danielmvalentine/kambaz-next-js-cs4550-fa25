@@ -11,7 +11,7 @@ export default async function CourseLayout({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const course = courses.find((course) => course._id === id);
+  const course = courses.find((course: any) => course._id === id);
   
   return (
     <div id="wd-courses">
