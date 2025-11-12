@@ -1,7 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
-const initialState = {
+interface ModulesState {
+  modules: any[];
+}
+
+const initialState: ModulesState = {
   modules: [],
 };
 
@@ -9,30 +13,30 @@ const modulesSlice = createSlice({
   name: "modules",
   initialState,
   reducers: {
-    setModules: (state, action) => {
+    setModules: (state, action: PayloadAction<any[]>) => {
       state.modules = action.payload;
     },
-    addModule: (state, action) => {
+    addModule: (state, action: PayloadAction<{ name: string; course: string }>) => {
       const newModule = {
         _id: uuidv4(),
         name: action.payload.name,
         course: action.payload.course,
         lessons: [],
       };
-      state.modules.push(newModule);
+      state.modules = [...state.modules, newModule];
     },
-    deleteModule: (state, action) => {
+    deleteModule: (state, action: PayloadAction<string>) => {
       state.modules = state.modules.filter(
-        (module) => module._id !== action.payload
+        (module: any) => module._id !== action.payload
       );
     },
-    updateModule: (state, action) => {
-      state.modules = state.modules.map((module) =>
+    updateModule: (state, action: PayloadAction<any>) => {
+      state.modules = state.modules.map((module: any) =>
         module._id === action.payload._id ? action.payload : module
       );
     },
-    editModule: (state, action) => {
-      state.modules = state.modules.map((module) =>
+    editModule: (state, action: PayloadAction<string>) => {
+      state.modules = state.modules.map((module: any) =>
         module._id === action.payload ? { ...module, editing: true } : module
       );
     },

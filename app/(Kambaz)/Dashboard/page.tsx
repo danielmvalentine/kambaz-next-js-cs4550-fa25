@@ -4,8 +4,9 @@ import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
 import { TextField } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse } from "../Courses/[id]/reducer";
+import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/[id]/reducer";
 import { RootState } from "../store";
+import * as db from "../Database";
 
 export default function Dashboard() {
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
@@ -23,7 +24,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Load courses from database on mount - using static import
+    if (db.courses && db.courses.length > 0) {
+      dispatch(setCourses(db.courses));
+    }
+  }, [dispatch]);
 
   if (!isMounted) {
     return (

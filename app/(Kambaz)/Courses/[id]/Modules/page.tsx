@@ -6,10 +6,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import ModuleControlButtons from "./ModuleControlButtons";
-import ModulesControls from "./ModulesControls";
-
-// Inline the actions temporarily to test
-import { v4 as uuidv4 } from "uuid";
+import * as db from "../../../Database";
 
 export default function Modules() {
   const params = useParams();
@@ -19,11 +16,7 @@ export default function Modules() {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Inline action creators for testing
+  // Inline action creators
   const addModuleLocal = (payload: { name: string; course: string }) => ({
     type: "modules/addModule",
     payload,
@@ -44,6 +37,19 @@ export default function Modules() {
     payload: moduleId,
   });
 
+  useEffect(() => {
+    setIsMounted(true);
+    // Load modules from database on mount - using static import
+    console.log("Loading modules from database...");
+    console.log("db.modules:", db.modules);
+    if (db.modules && db.modules.length > 0) {
+      console.log("Dispatching setModules with:", db.modules);
+      dispatch({ type: "modules/setModules", payload: db.modules });
+    } else {
+      console.log("No modules found in database");
+    }
+  }, [dispatch]);
+
   if (!isMounted) {
     return (
       <div>
@@ -51,6 +57,11 @@ export default function Modules() {
       </div>
     );
   }
+
+  const courseModules = modules ? modules.filter((module: any) => module.course === cid) : [];
+
+  console.log("All modules from Redux:", modules);
+  console.log("Filtered courseModules for cid", cid, ":", courseModules);
 
   return (
     <div className="wd-modules">
@@ -87,55 +98,53 @@ export default function Modules() {
       </div>
       
       <ListGroup id="wd-modules" className="rounded-0">
-        {modules
-          .filter((module: any) => module.course === cid)
-          .map((module: any) => (
-            <ListGroupItem
-              key={module._id}
-              className="wd-module p-0 mb-5 fs-5 border-gray"
-            >
-              <div className="wd-title p-3 ps-2 bg-secondary">
-                <BsGripVertical className="me-2 fs-3" />
-                {!module.editing && module.name}
-                {module.editing && (
-                  <FormControl 
-                    className="w-50 d-inline-block"
-                    onChange={(e) =>
-                      dispatch(
-                        updateModuleLocal({ ...module, name: e.target.value })
-                      )
+        {courseModules.map((module: any) => (
+          <ListGroupItem
+            key={module._id}
+            className="wd-module p-0 mb-5 fs-5 border-gray"
+          >
+            <div className="wd-title p-3 ps-2 bg-secondary">
+              <BsGripVertical className="me-2 fs-3" />
+              {!module.editing && module.name}
+              {module.editing && (
+                <FormControl 
+                  className="w-50 d-inline-block"
+                  onChange={(e) =>
+                    dispatch(
+                      updateModuleLocal({ ...module, name: e.target.value })
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      dispatch(updateModuleLocal({ ...module, editing: false }));
                     }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        dispatch(updateModuleLocal({ ...module, editing: false }));
-                      }
-                    }}
-                    defaultValue={module.name} 
-                  />
-                )}
-                <ModuleControlButtons 
-                  moduleId={module._id}
-                  deleteModule={(moduleId) => {
-                    dispatch(deleteModuleLocal(moduleId));
                   }}
-                  editModule={(moduleId) => dispatch(editModuleLocal(moduleId))} 
+                  defaultValue={module.name} 
                 />
-              </div>
-              {module.lessons && module.lessons.length > 0 && (
-                <ListGroup className="wd-lessons rounded-0">
-                  {module.lessons.map((lesson: any) => (
-                    <ListGroupItem
-                      key={lesson._id}
-                      className="wd-lesson p-3 ps-1 border-gray"
-                    >
-                      <BsGripVertical className="me-2 fs-3" />
-                      {lesson.name}
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
               )}
-            </ListGroupItem>
-          ))}
+              <ModuleControlButtons 
+                moduleId={module._id}
+                deleteModule={(moduleId) => {
+                  dispatch(deleteModuleLocal(moduleId));
+                }}
+                editModule={(moduleId) => dispatch(editModuleLocal(moduleId))} 
+              />
+            </div>
+            {module.lessons && module.lessons.length > 0 && (
+              <ListGroup className="wd-lessons rounded-0">
+                {module.lessons.map((lesson: any) => (
+                  <ListGroupItem
+                    key={lesson._id}
+                    className="wd-lesson p-3 ps-1 border-gray"
+                  >
+                    <BsGripVertical className="me-2 fs-3" />
+                    {lesson.name}
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
+            )}
+          </ListGroupItem>
+        ))}
       </ListGroup>
     </div>
   );
