@@ -2,8 +2,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../store";
-import { addAssignment, updateAssignment } from "../reducer";
+import { RootState } from "../../../store";  // 3 levels up, not 4
+import { addAssignment, updateAssignment } from "./reducer";  // same folder
 
 export default function AssignmentEditor() {
   const params = useParams();
