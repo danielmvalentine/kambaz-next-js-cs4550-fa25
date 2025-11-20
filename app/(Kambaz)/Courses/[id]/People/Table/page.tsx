@@ -13,7 +13,7 @@ export default function PeopleTable() {
   useEffect(() => {
     Promise.all([
       import("../../../../Database/users.json"),
-      import("../../../../Database/enrollments.json")
+      import("../../../../Database/enrollments")
     ]).then(([usersData, enrollmentsData]) => {
       setUsers(usersData.default);
       setEnrollments(enrollmentsData.default);
