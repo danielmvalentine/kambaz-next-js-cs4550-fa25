@@ -1,39 +1,59 @@
-"use client";
-import { Nav, NavItem, NavLink } from "react-bootstrap";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-export default function TOC() {
- const pathname = usePathname();
- return (
-   <Nav variant="pills">
-     <NavItem>
-       <NavLink href="/Labs" as={Link} className={`nav-link ${pathname.endsWith("Labs") ? "active" : ""}`}>
-         Labs </NavLink> </NavItem>
-     <NavItem>
-       <NavLink href="/Labs/Lab1" as={Link} className={`nav-link ${pathname.endsWith("Lab1") ? "active" : ""}`}>
-         Lab 1 </NavLink> </NavItem>
-     <NavItem>
-       <NavLink href="/Labs/Lab2" as={Link} className={`nav-link ${pathname.endsWith("Lab2") ? "active" : ""}`}>
-         Lab 2 </NavLink> </NavItem>
-     <NavItem>
-       <NavLink href="/Labs/Lab3" as={Link} className={`nav-link ${pathname.endsWith("Lab3") ? "active" : ""}`}>
-         Lab 3 </NavLink> </NavItem>
-     <NavItem>
-      <NavItem>
-        <NavLink href="/Labs/Lab4" as={Link} className={`nav-link ${pathname.endsWith("Lab4") ? "active" : ""}`}>
-        Lab 4 </NavLink> </NavItem>
-      <NavItem>
-        <NavLink href="/Labs/Lab5" as={Link} className={`nav-link ${pathname.endsWith("Lab5") ? "active" : ""}`}>
-        Lab 5 </NavLink> </NavItem>
-      
-       <NavLink href="/" as={Link}>Kambaz</NavLink>
-     </NavItem>
-     <NavItem>
-      <NavLink href="https://github.com/danielmvalentine/kambaz-next-js-cs4550-fa25">wd-github</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="https://github.com/jannunzi">My GitHub</NavLink>
-     </NavItem>
-   </Nav>
-);}
 
+export default function TOC() {
+  return (
+    <ul className="nav nav-pills">
+      <li className="nav-item">
+        <Link className="nav-link" href="/Labs">Labs</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link" href="/Labs/Lab1">Lab 1</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link" href="/Labs/Lab2">Lab 2</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link" href="/Labs/Lab3">Lab 3</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link" href="/Labs/Lab4">Lab 4</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link" href="/Labs/Lab5">Lab 5</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link" href="/Kambaz">Kambaz</Link>
+      </li>
+      <li className="nav-item">
+        <a 
+          className="nav-link" 
+          href="https://github.com/danielmvalentine/kambaz-next-js-cs4550-fa25/tree/a5"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub Frontend (a5)
+        </a>
+      </li>
+      <li className="nav-item">
+        <a 
+          className="nav-link" 
+          href="https://github.com/danielmvalentine/kambaz-node-server-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub Backend (a5)
+        </a>
+      </li>
+      <li className="nav-item">
+        <a 
+          className="nav-link" 
+          href="https://kambaz-node-server-app-w5y2.onrender.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Server (Render)
+        </a>
+      </li>
+    </ul>
+  );
+}
