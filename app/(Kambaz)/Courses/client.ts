@@ -1,9 +1,10 @@
 import axios from "axios";
 
-const COURSES_API = "http://localhost:4000/api/courses";
-const USERS_API = "http://localhost:4000/api/users";
-const MODULES_API = "http://localhost:4000/api/modules";
-const ASSIGNMENTS_API = "http://localhost:4000/api/assignments";
+const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
+const COURSES_API = `${HTTP_SERVER}/api/courses`;
+const USERS_API = `${HTTP_SERVER}/api/users`;
+const MODULES_API = `${HTTP_SERVER}/api/modules`;
+const ASSIGNMENTS_API = `${HTTP_SERVER}/api/assignments`;
 
 const axiosWithCredentials = axios.create({
   withCredentials: true,

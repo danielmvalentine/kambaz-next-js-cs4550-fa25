@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const USERS_API = "http://localhost:4000/api/users";
+const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
+const USERS_API = `${HTTP_SERVER}/api/users`;
 
 const axiosWithCredentials = axios.create({
   baseURL: USERS_API,
@@ -23,9 +24,7 @@ export const profile = async () => {
 };
 
 export const updateUser = async (user: any) => {
-  console.log("Client: Updating user to:", user);
   const response = await axiosWithCredentials.put("/profile", user);
-  console.log("Client: Update response:", response.data);
   return response.data;
 };
 
