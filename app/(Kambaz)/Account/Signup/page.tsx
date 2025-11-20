@@ -18,10 +18,10 @@ export default function Signup() {
       setError("");
       const currentUser = await client.signup(user);
       dispatch(setCurrentUser(currentUser));
-      router.push("/Account/Profile");
+      router.push("/Dashboard");
     } catch (err: any) {
-      console.error("Signup error:", err);
       const message = err.response?.data?.message || 
+                      err.response?.status === 400 ? "Username already taken. Please choose another." :
                       err.response?.status === 500 ? "Server error. Please try again." :
                       "Signup failed. Please try again.";
       setError(message);

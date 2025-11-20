@@ -14,6 +14,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [allCourses, setAllCourses] = useState<any[]>([]);
   const [course, setCourse] = useState<any>({
     _id: "0", 
     name: "New Course", 
@@ -23,6 +24,20 @@ export default function Dashboard() {
     image: "/images/NEU.png", 
     description: "New Description"
   });
+
+  const fetchCourses = async () => {
+    try {
+      const myCourses = await client.findMyCourses();
+      dispatch(setCourses(myCourses));
+      
+      const all = await client.findAllCourses();
+      setAllCourses(all);
+    } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        router.push("/Account/Signin");
+      }
+    }
+  };
 
   const onAddNewCourse = async () => {
     const newCourse = await client.createCourse(course);
@@ -42,9 +57,29 @@ export default function Dashboard() {
     dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
   };
 
-  // Check authentication - wait for Session component to finish
+  const onEnrollInCourse = async (courseId: string) => {
+    try {
+      await client.enrollInCourse(courseId);
+      fetchCourses();
+    } catch (error) {
+      console.error("Error enrolling in course:", error);
+    }
+  };
+
+  const onUnenrollFromCourse = async (courseId: string) => {
+    try {
+      await client.unenrollFromCourse(courseId);
+      fetchCourses();
+    } catch (error) {
+      console.error("Error unenrolling from course:", error);
+    }
+  };
+
+  const isEnrolled = (courseId: string) => {
+    return courses.some(c => c._id === courseId);
+  };
+
   useEffect(() => {
-    // Give Session component time to fetch profile
     const timer = setTimeout(() => {
       setIsCheckingAuth(false);
       if (!currentUser) {
@@ -55,25 +90,11 @@ export default function Dashboard() {
     return () => clearTimeout(timer);
   }, [currentUser, router]);
 
-  // Fetch courses ONLY if logged in
   useEffect(() => {
     if (!currentUser || isCheckingAuth) return;
-
-    const fetchCourses = async () => {
-      try {
-        const courses = await client.findMyCourses();
-        dispatch(setCourses(courses));
-      } catch (error: any) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          router.push("/Account/Signin");
-        }
-      }
-    };
-
     fetchCourses();
   }, [currentUser, isCheckingAuth]);
 
-  // Show nothing while checking auth or if not logged in
   if (isCheckingAuth || !currentUser) {
     return null;
   }
@@ -81,45 +102,55 @@ export default function Dashboard() {
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
-      <h5>
-        New Course
-        <button 
-          onClick={onAddNewCourse}
-          className="btn btn-primary float-end"
-          id="wd-add-new-course-click"
-        > 
-          Add 
-        </button>
-        <button 
-          onClick={onUpdateCourse}
-          className="btn btn-warning float-end me-2"
-          id="wd-update-course-click"
-        >
-          Update
-        </button>
-      </h5>
-      <br />
-      <TextField 
-        id="wd-course-name"
-        value={course.name} 
-        onChange={(e) => setCourse({ ...course, name: e.target.value })}
-        className="mb-2" 
-        fullWidth
-        label="Course Name"
-        variant="outlined"
-      />
-      <TextField 
-        id="wd-course-description"
-        value={course.description} 
-        onChange={(e) => setCourse({ ...course, description: e.target.value })}
-        rows={3}
-        multiline
-        fullWidth
-        label="Course Description"
-        variant="outlined"
-      />
-      <hr />
-      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+      
+      {/* Course Creation Section - Only for Faculty/Admin */}
+      {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
+        <>
+          <h5>
+            New Course
+            <button 
+              onClick={onAddNewCourse}
+              className="btn btn-primary float-end"
+              id="wd-add-new-course-click"
+            > 
+              Add 
+            </button>
+            <button 
+              onClick={onUpdateCourse}
+              className="btn btn-warning float-end me-2"
+              id="wd-update-course-click"
+            >
+              Update
+            </button>
+          </h5>
+          <br />
+          <TextField 
+            id="wd-course-name"
+            value={course.name} 
+            onChange={(e) => setCourse({ ...course, name: e.target.value })}
+            className="mb-2" 
+            fullWidth
+            label="Course Name"
+            variant="outlined"
+          />
+          <TextField 
+            id="wd-course-description"
+            value={course.description} 
+            onChange={(e) => setCourse({ ...course, description: e.target.value })}
+            rows={3}
+            multiline
+            fullWidth
+            label="Course Description"
+            variant="outlined"
+          />
+          <hr />
+        </>
+      )}
+
+      {/* Enrolled Courses */}
+      <h2 id="wd-dashboard-published">
+        {currentUser.role === "STUDENT" ? "Enrolled Courses" : "Published Courses"} ({courses.length})
+      </h2>
       <hr />
       <div id="wd-dashboard-courses" className="row row-cols-1 row-cols-md-5 g-4">
         {courses.map((course: any) => (
@@ -150,32 +181,95 @@ export default function Dashboard() {
                     {course.description}
                   </p>
                   <button className="btn btn-primary">Go</button>
-                  <button 
-                    id="wd-edit-course-click"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      setCourse(course);
-                    }}
-                    className="btn btn-warning me-2 float-end"
-                  >
-                    Edit
-                  </button>
-                  <button 
-                    className="btn btn-danger float-end"
-                    id="wd-delete-course-click"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      onDeleteCourse(course._id);
-                    }}
-                  >
-                    Delete
-                  </button>
+                  
+                  {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
+                    <>
+                      <button 
+                        id="wd-edit-course-click"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          setCourse(course);
+                        }}
+                        className="btn btn-warning me-2 float-end"
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        className="btn btn-danger float-end me-2"
+                        id="wd-delete-course-click"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          onDeleteCourse(course._id);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                  
+                  {currentUser.role === "STUDENT" && (
+                    <button 
+                      className="btn btn-danger float-end"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        onUnenrollFromCourse(course._id);
+                      }}
+                    >
+                      Unenroll
+                    </button>
+                  )}
                 </div>
               </div>
             </Link>
           </div>
         ))}
       </div>
+
+      {/* All Available Courses for Enrollment - Students Only */}
+      {currentUser.role === "STUDENT" && (
+        <>
+          <hr className="mt-5" />
+          <h2>All Courses</h2>
+          <hr />
+          <div className="row row-cols-1 row-cols-md-5 g-4">
+            {allCourses
+              .filter(c => !isEnrolled(c._id))
+              .map((course: any) => (
+                <div 
+                  key={course._id}
+                  className="wd-dashboard-course col" 
+                  style={{ width: "300px" }}
+                >
+                  <div className="card">
+                    <img 
+                      src={course.image || "/images/reactjs.jpg"} 
+                      className="card-img-top"
+                      alt={course.name}
+                      style={{ height: "160px", objectFit: "cover" }}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title text-nowrap overflow-hidden">
+                        {course.name}
+                      </h5>
+                      <p 
+                        className="card-text overflow-hidden text-muted" 
+                        style={{ height: "53px" }}
+                      >
+                        {course.description}
+                      </p>
+                      <button 
+                        className="btn btn-success w-100"
+                        onClick={() => onEnrollInCourse(course._id)}
+                      >
+                        Enroll
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

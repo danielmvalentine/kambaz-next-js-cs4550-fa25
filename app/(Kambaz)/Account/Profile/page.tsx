@@ -35,7 +35,7 @@ export default function Profile() {
         lastName: currentUser.lastName || "",
         dob: currentUser.dob || "",
         email: currentUser.email || "",
-        role: currentUser.role || "USER"
+        role: currentUser.role || "USER"  // Make sure this is here!
       });
     }
   }, [currentUser]); // Only currentUser as dependency

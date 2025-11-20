@@ -11,6 +11,18 @@
       "totalActivity": "10:21:32",
       "loginId": "001234561S"
     },
+
+    {
+      "_id": "121",
+      "username": "stu",
+      "password": "123",
+      "firstName": "Student",
+      "lastName": "User",
+      "email": "student@example.com",
+      "dob": "2000-01-01",
+      "role": "STUDENT" 
+    },
+
     {
       "_id": "122",
       "firstName": "Dani",

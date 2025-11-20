@@ -13,12 +13,10 @@ export default function Session({ children }: { children: any }) {
       const currentUser = await client.profile();
       dispatch(setCurrentUser(currentUser));
     } catch (err: any) {
-      // Silently handle 401/403 - it just means user is not logged in
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        // This is expected - user is not authenticated
+      // Silently handle 401/403/404 - user is not logged in
+      if (err.response?.status === 401 || err.response?.status === 403 || err.response?.status === 404) {
         dispatch(setCurrentUser(null));
       } else {
-        // Only log unexpected errors
         console.error("Session error:", err);
       }
     } finally {
@@ -30,7 +28,6 @@ export default function Session({ children }: { children: any }) {
     fetchProfile();
   }, []);
   
-  // Don't render children until we've checked the session
   if (pending) {
     return null;
   }

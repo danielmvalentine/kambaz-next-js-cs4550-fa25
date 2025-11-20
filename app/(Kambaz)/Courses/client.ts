@@ -10,6 +10,11 @@ const axiosWithCredentials = axios.create({
 });
 
 // Course functions
+export const findAllCourses = async () => {
+  const { data } = await axiosWithCredentials.get(`${COURSES_API}/all`);
+  return data;
+};
+
 export const findMyCourses = async () => {
   const { data } = await axiosWithCredentials.get(COURSES_API);
   return data;
@@ -35,6 +40,17 @@ export const findCourseById = async (courseId: string) => {
   return data;
 };
 
+// Enrollment functions
+export const enrollInCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.post(`${COURSES_API}/${courseId}/enroll`);
+  return data;
+};
+
+export const unenrollFromCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.delete(`${COURSES_API}/${courseId}/enroll`);
+  return data;
+};
+
 // Module functions
 export const findModulesForCourse = async (courseId: string) => {
   const { data } = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/modules`);
@@ -56,6 +72,7 @@ export const updateModule = async (module: any) => {
   return data;
 };
 
+// Assignment functions
 export const findAssignmentsForCourse = async (courseId: string) => {
   const { data } = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/assignments`);
   return data;
