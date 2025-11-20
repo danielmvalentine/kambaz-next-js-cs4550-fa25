@@ -13,7 +13,10 @@ export default function Assignments() {
   const cid = params.id as string;
   const router = useRouter();
   const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const dispatch = useDispatch();
+
+  const isFacultyOrAdmin = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   const fetchAssignments = async () => {
     const assignments = await client.findAssignmentsForCourse(cid);
@@ -33,12 +36,15 @@ export default function Assignments() {
     <div className="wd-assignments p-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3>Assignments</h3>
-        <button
-          onClick={() => router.push(`/Courses/${cid}/Assignments/new`)}
-          className="btn btn-danger"
-        >
-          <BsPlus className="fs-4" /> Assignment
-        </button>
+        {/* Only Faculty/Admin can add assignments */}
+        {isFacultyOrAdmin && (
+          <button
+            onClick={() => router.push(`/Courses/${cid}/Assignments/new`)}
+            className="btn btn-danger"
+          >
+            <BsPlus className="fs-4" /> Assignment
+          </button>
+        )}
       </div>
       
       <ul className="list-group">
@@ -48,20 +54,23 @@ export default function Assignments() {
               <Link href={`/Courses/${cid}/Assignments/${assignment._id}`}>
                 <strong>{assignment.title}</strong>
               </Link>
-              <div>
-                <button
-                  onClick={() => router.push(`/Courses/${cid}/Assignments/${assignment._id}`)}
-                  className="btn btn-warning btn-sm me-2"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDeleteAssignment(assignment._id)}
-                  className="btn btn-danger btn-sm"
-                >
-                  Delete
-                </button>
-              </div>
+              {/* Only Faculty/Admin can edit/delete */}
+              {isFacultyOrAdmin && (
+                <div>
+                  <button
+                    onClick={() => router.push(`/Courses/${cid}/Assignments/${assignment._id}`)}
+                    className="btn btn-warning btn-sm me-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDeleteAssignment(assignment._id)}
+                    className="btn btn-danger btn-sm"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
             {assignment.description && (
               <p className="mb-1 text-muted">{assignment.description}</p>

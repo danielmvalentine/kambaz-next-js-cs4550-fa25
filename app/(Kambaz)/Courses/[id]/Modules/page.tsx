@@ -14,7 +14,10 @@ export default function Modules() {
   const cid = params.id as string;
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: RootState) => state.modulesReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const dispatch = useDispatch();
+
+  const isFacultyOrAdmin = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   const fetchModules = async () => {
     const modules = await client.findModulesForCourse(cid as string);
@@ -48,31 +51,33 @@ export default function Modules() {
 
   return (
     <div className="wd-modules">
-      {/* Simple inline module editor */}
-      <div className="mb-4 p-3 border rounded bg-light">
-        <h5>
-          Add Module
-          <button 
-            className="btn btn-primary float-end" 
-            onClick={onCreateModuleForCourse}
-            disabled={!moduleName.trim()}
-          >
+      {/* Only show module editor for Faculty/Admin */}
+      {isFacultyOrAdmin && (
+        <div className="mb-4 p-3 border rounded bg-light">
+          <h5>
             Add Module
-          </button>
-        </h5>
-        <input
-          type="text"
-          className="form-control mt-3"
-          placeholder="New Module Name"
-          value={moduleName}
-          onChange={(e) => setModuleName(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && moduleName.trim()) {
-              onCreateModuleForCourse();
-            }
-          }}
-        />
-      </div>
+            <button 
+              className="btn btn-primary float-end" 
+              onClick={onCreateModuleForCourse}
+              disabled={!moduleName.trim()}
+            >
+              Add Module
+            </button>
+          </h5>
+          <input
+            type="text"
+            className="form-control mt-3"
+            placeholder="New Module Name"
+            value={moduleName}
+            onChange={(e) => setModuleName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && moduleName.trim()) {
+                onCreateModuleForCourse();
+              }
+            }}
+          />
+        </div>
+      )}
       
       <ListGroup id="wd-modules" className="rounded-0">
         {modules.map((module: any) => (
@@ -83,7 +88,7 @@ export default function Modules() {
             <div className="wd-title p-3 ps-2 bg-secondary">
               <BsGripVertical className="me-2 fs-3" />
               {!module.editing && module.name}
-              {module.editing && (
+              {module.editing && isFacultyOrAdmin && (
                 <FormControl 
                   className="w-50 d-inline-block"
                   value={module.name}
@@ -99,11 +104,14 @@ export default function Modules() {
                   }}
                 />
               )}
-              <ModuleControlButtons 
-                moduleId={module._id}
-                deleteModule={(moduleId) => onRemoveModule(moduleId)}
-                editModule={(moduleId) => dispatch(editModule(moduleId))} 
-              />
+              {/* Only show control buttons for Faculty/Admin */}
+              {isFacultyOrAdmin && (
+                <ModuleControlButtons 
+                  moduleId={module._id}
+                  deleteModule={(moduleId) => onRemoveModule(moduleId)}
+                  editModule={(moduleId) => dispatch(editModule(moduleId))} 
+                />
+              )}
             </div>
             {module.lessons && module.lessons.length > 0 && (
               <ListGroup className="wd-lessons rounded-0">
