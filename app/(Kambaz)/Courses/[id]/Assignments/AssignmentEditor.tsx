@@ -2,8 +2,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../store";
-import * as client from "../../../client";
+import { RootState } from "../../../store";
+import * as client from "../../client";
 
 export default function AssignmentEditor() {
   const params = useParams();
