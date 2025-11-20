@@ -17,16 +17,17 @@ export default function Signin() {
   
   const signin = async () => {
     try {
-      setError("");
+      setError(""); // Clear previous errors
       const user = await client.signin(credentials);
       if (!user) return;
       dispatch(setCurrentUser(user));
       router.push("/Dashboard");
     } catch (err: any) {
-      console.error("Signin error:", err);
+      // Don't log to console, just show to user
       const message = err.response?.data?.message || 
+                      err.response?.status === 401 ? "Invalid username or password" :
                       err.response?.status === 500 ? "Server error. Please try again." :
-                      "Invalid username or password";
+                      "An error occurred. Please try again.";
       setError(message);
     }
   };
@@ -51,6 +52,11 @@ export default function Signin() {
         placeholder="password" 
         type="password"
         onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            signin();
+          }
+        }}
       />
       <button 
         id="wd-signin-btn" 

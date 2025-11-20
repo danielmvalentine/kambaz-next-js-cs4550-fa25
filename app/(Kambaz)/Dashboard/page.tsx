@@ -2,10 +2,9 @@
 import * as client from "../Courses/client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { v4 as uuidv4 } from "uuid";
 import { TextField } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/reducer";
+import { setCourses } from "../Courses/reducer";
 import { RootState } from "../store";
 import { useRouter } from "next/navigation";
 
@@ -14,6 +13,7 @@ export default function Dashboard() {
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [course, setCourse] = useState<any>({
     _id: "0", 
     name: "New Course", 
@@ -24,16 +24,40 @@ export default function Dashboard() {
     description: "New Description"
   });
 
-  // Redirect if not logged in
+  const onAddNewCourse = async () => {
+    const newCourse = await client.createCourse(course);
+    dispatch(setCourses([...courses, newCourse]));
+  };
+
+  const onUpdateCourse = async () => {
+    await client.updateCourse(course);
+    const updatedCourses = courses.map((c) =>
+      c._id === course._id ? course : c
+    );
+    dispatch(setCourses(updatedCourses));
+  };
+
+  const onDeleteCourse = async (courseId: string) => {
+    await client.deleteCourse(courseId);
+    dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
+  };
+
+  // Check authentication - wait for Session component to finish
   useEffect(() => {
-    if (!currentUser) {
-      router.push("/Account/Signin");
-    }
-  }, [currentUser]);
+    // Give Session component time to fetch profile
+    const timer = setTimeout(() => {
+      setIsCheckingAuth(false);
+      if (!currentUser) {
+        router.push("/Account/Signin");
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [currentUser, router]);
 
   // Fetch courses ONLY if logged in
   useEffect(() => {
-    if (!currentUser) return; // Don't fetch at all if no user
+    if (!currentUser || isCheckingAuth) return;
 
     const fetchCourses = async () => {
       try {
@@ -47,10 +71,10 @@ export default function Dashboard() {
     };
 
     fetchCourses();
-  }, [currentUser]);
+  }, [currentUser, isCheckingAuth]);
 
-  // Don't render anything if not logged in
-  if (!currentUser) {
+  // Show nothing while checking auth or if not logged in
+  if (isCheckingAuth || !currentUser) {
     return null;
   }
 
@@ -60,19 +84,16 @@ export default function Dashboard() {
       <h5>
         New Course
         <button 
+          onClick={onAddNewCourse}
           className="btn btn-primary float-end"
           id="wd-add-new-course-click"
-          onClick={() => {
-            const newCourse = { ...course, _id: uuidv4() };
-            dispatch(addNewCourse(newCourse));
-          }}
         > 
           Add 
         </button>
         <button 
+          onClick={onUpdateCourse}
           className="btn btn-warning float-end me-2"
           id="wd-update-course-click"
-          onClick={() => dispatch(updateCourse(course))}
         >
           Update
         </button>
@@ -140,12 +161,12 @@ export default function Dashboard() {
                     Edit
                   </button>
                   <button 
-                    onClick={(event) => {
-                      event.preventDefault();
-                      dispatch(deleteCourse(course._id));
-                    }} 
                     className="btn btn-danger float-end"
                     id="wd-delete-course-click"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      onDeleteCourse(course._id);
+                    }}
                   >
                     Delete
                   </button>

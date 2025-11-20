@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import ModuleControlButtons from "./ModuleControlButtons";
-import * as db from "../../../Database";
+import { setModules, updateModule as updateModuleReducer, editModule } from "./reducer";
+import * as client from "../../client";
 
 export default function Modules() {
   const params = useParams();
@@ -14,54 +15,36 @@ export default function Modules() {
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: RootState) => state.modulesReducer);
   const dispatch = useDispatch();
-  const [isMounted, setIsMounted] = useState(false);
 
-  // Inline action creators
-  const addModuleLocal = (payload: { name: string; course: string }) => ({
-    type: "modules/addModule",
-    payload,
-  });
+  const fetchModules = async () => {
+    const modules = await client.findModulesForCourse(cid as string);
+    dispatch(setModules(modules));
+  };
 
-  const editModuleLocal = (moduleId: string) => ({
-    type: "modules/editModule",
-    payload: moduleId,
-  });
+  const onCreateModuleForCourse = async () => {
+    if (!cid || !moduleName.trim()) return;
+    const newModule = { name: moduleName, course: cid };
+    const module = await client.createModuleForCourse(cid, newModule);
+    dispatch(setModules([...modules, module]));
+    setModuleName("");
+  };
 
-  const updateModuleLocal = (module: any) => ({
-    type: "modules/updateModule",
-    payload: module,
-  });
+  const onRemoveModule = async (moduleId: string) => {
+    await client.deleteModule(moduleId);
+    dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
+  };
 
-  const deleteModuleLocal = (moduleId: string) => ({
-    type: "modules/deleteModule",
-    payload: moduleId,
-  });
+  const onUpdateModule = async (module: any) => {
+    await client.updateModule(module);
+    const newModules = modules.map((m: any) => 
+      m._id === module._id ? module : m
+    );
+    dispatch(setModules(newModules));
+  };
 
   useEffect(() => {
-    setIsMounted(true);
-    // Load modules from database on mount - using static import
-    console.log("Loading modules from database...");
-    console.log("db.modules:", db.modules);
-    if (db.modules && db.modules.length > 0) {
-      console.log("Dispatching setModules with:", db.modules);
-      dispatch({ type: "modules/setModules", payload: db.modules });
-    } else {
-      console.log("No modules found in database");
-    }
-  }, [dispatch]);
-
-  if (!isMounted) {
-    return (
-      <div>
-        <h3>Loading modules...</h3>
-      </div>
-    );
-  }
-
-  const courseModules = modules ? modules.filter((module: any) => module.course === cid) : [];
-
-  console.log("All modules from Redux:", modules);
-  console.log("Filtered courseModules for cid", cid, ":", courseModules);
+    fetchModules();
+  }, []);
 
   return (
     <div className="wd-modules">
@@ -71,12 +54,7 @@ export default function Modules() {
           Add Module
           <button 
             className="btn btn-primary float-end" 
-            onClick={() => {
-              if (moduleName.trim()) {
-                dispatch(addModuleLocal({ name: moduleName, course: cid }));
-                setModuleName("");
-              }
-            }}
+            onClick={onCreateModuleForCourse}
             disabled={!moduleName.trim()}
           >
             Add Module
@@ -90,15 +68,14 @@ export default function Modules() {
           onChange={(e) => setModuleName(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && moduleName.trim()) {
-              dispatch(addModuleLocal({ name: moduleName, course: cid }));
-              setModuleName("");
+              onCreateModuleForCourse();
             }
           }}
         />
       </div>
       
       <ListGroup id="wd-modules" className="rounded-0">
-        {courseModules.map((module: any) => (
+        {modules.map((module: any) => (
           <ListGroupItem
             key={module._id}
             className="wd-module p-0 mb-5 fs-5 border-gray"
@@ -109,25 +86,23 @@ export default function Modules() {
               {module.editing && (
                 <FormControl 
                   className="w-50 d-inline-block"
+                  value={module.name}
                   onChange={(e) =>
                     dispatch(
-                      updateModuleLocal({ ...module, name: e.target.value })
+                      updateModuleReducer({ ...module, name: e.target.value })
                     )
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      dispatch(updateModuleLocal({ ...module, editing: false }));
+                      onUpdateModule({ ...module, editing: false });
                     }
                   }}
-                  defaultValue={module.name} 
                 />
               )}
               <ModuleControlButtons 
                 moduleId={module._id}
-                deleteModule={(moduleId) => {
-                  dispatch(deleteModuleLocal(moduleId));
-                }}
-                editModule={(moduleId) => dispatch(editModuleLocal(moduleId))} 
+                deleteModule={(moduleId) => onRemoveModule(moduleId)}
+                editModule={(moduleId) => dispatch(editModule(moduleId))} 
               />
             </div>
             {module.lessons && module.lessons.length > 0 && (
