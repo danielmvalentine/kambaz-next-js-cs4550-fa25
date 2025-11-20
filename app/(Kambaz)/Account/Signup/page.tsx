@@ -9,22 +9,33 @@ import * as client from "../client";
 
 export default function Signup() {
   const [user, setUser] = useState<any>({ username: "", password: "" });
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
   
   const signup = async () => {
     try {
+      setError("");
       const currentUser = await client.signup(user);
       dispatch(setCurrentUser(currentUser));
       router.push("/Account/Profile");
-    } catch (error) {
-      console.error("Signup error:", error);
+    } catch (err: any) {
+      console.error("Signup error:", err);
+      const message = err.response?.data?.message || 
+                      err.response?.status === 500 ? "Server error. Please try again." :
+                      "Signup failed. Please try again.";
+      setError(message);
     }
   };
 
   return (
     <div className="wd-signup-screen">
       <h1>Sign up</h1>
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
       <FormControl 
         value={user.username} 
         onChange={(e) => setUser({ ...user, username: e.target.value })}

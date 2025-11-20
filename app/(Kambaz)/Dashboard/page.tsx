@@ -1,17 +1,19 @@
 "use client";
+import * as client from "../Courses/client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
 import { TextField } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/[id]/reducer";
+import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/reducer";
 import { RootState } from "../store";
-import * as db from "../Database";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const dispatch = useDispatch();
-  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
   const [course, setCourse] = useState<any>({
     _id: "0", 
     name: "New Course", 
@@ -22,21 +24,34 @@ export default function Dashboard() {
     description: "New Description"
   });
 
+  // Redirect if not logged in
   useEffect(() => {
-    setIsMounted(true);
-    // Load courses from database on mount - using static import
-    if (db.courses && db.courses.length > 0) {
-      dispatch(setCourses(db.courses));
+    if (!currentUser) {
+      router.push("/Account/Signin");
     }
-  }, [dispatch]);
+  }, [currentUser]);
 
-  if (!isMounted) {
-    return (
-      <div id="wd-dashboard">
-        <h1 id="wd-dashboard-title">Dashboard</h1>
-        <p>Loading courses...</p>
-      </div>
-    );
+  // Fetch courses ONLY if logged in
+  useEffect(() => {
+    if (!currentUser) return; // Don't fetch at all if no user
+
+    const fetchCourses = async () => {
+      try {
+        const courses = await client.findMyCourses();
+        dispatch(setCourses(courses));
+      } catch (error: any) {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          router.push("/Account/Signin");
+        }
+      }
+    };
+
+    fetchCourses();
+  }, [currentUser]);
+
+  // Don't render anything if not logged in
+  if (!currentUser) {
+    return null;
   }
 
   return (
@@ -64,6 +79,7 @@ export default function Dashboard() {
       </h5>
       <br />
       <TextField 
+        id="wd-course-name"
         value={course.name} 
         onChange={(e) => setCourse({ ...course, name: e.target.value })}
         className="mb-2" 
@@ -72,6 +88,7 @@ export default function Dashboard() {
         variant="outlined"
       />
       <TextField 
+        id="wd-course-description"
         value={course.description} 
         onChange={(e) => setCourse({ ...course, description: e.target.value })}
         rows={3}
