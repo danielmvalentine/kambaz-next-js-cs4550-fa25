@@ -2,7 +2,6 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import * as client from "../../client"; 
-console.log("");
 
 export default function AssignmentEditor() {
   const { id: cid, aid } = useParams();

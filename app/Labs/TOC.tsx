@@ -22,7 +22,7 @@ export default function TOC() {
         <Link className="nav-link" href="/Labs/Lab5">Lab 5</Link>
       </li>
       <li className="nav-item">
-        <Link className="nav-link" href="/Kambaz">Kambaz</Link>
+        <Link className="nav-link" href="/Account/Signin">Kambaz</Link>
       </li>
       <li className="nav-item">
         <a 
