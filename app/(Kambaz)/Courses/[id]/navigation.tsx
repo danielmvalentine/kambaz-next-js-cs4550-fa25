@@ -17,7 +17,7 @@ export default function CourseNavigation() {
     { label: "Zoom", path: "Zoom" },
     { label: "Assignments", path: "Assignments" },
     { label: "Quizzes", path: "Quizzes" },
-    { label: "People", path: "People/Table" },
+    { label: "People", path: "People" },
   ];
   
   return (
