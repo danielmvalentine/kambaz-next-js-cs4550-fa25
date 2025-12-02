@@ -2,13 +2,11 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import PeopleTable from "./Table";
-import PeopleDetails from "./Details";
 
 export default function PeoplePage() {
   const params = useParams();
   const id = params.id as string;
   const [users, setUsers] = useState<any[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const fetchUsers = async () => {
     try {
@@ -24,22 +22,11 @@ export default function PeoplePage() {
     fetchUsers();
   }, [id]);
 
-  console.log(":3 Selected user ID:", selectedUserId);
-
   return (
     <div>
       <PeopleTable 
         users={users} 
         fetchUsers={fetchUsers}
-        // onSelectUser={(userId) => {
-        //   console.log("onSelectUser called with:", userId);
-        //   setSelectedUserId(userId);
-        // }}
-        onSelectUser={setSelectedUserId}  // Simplified - direct reference
-      />
-      <PeopleDetails 
-        uid={selectedUserId} 
-        onClose={() => setSelectedUserId(null)} 
       />
     </div>
   );
