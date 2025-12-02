@@ -20,7 +20,7 @@ export default function PeopleDetails({ uid, onClose }: { uid: string | null; on
   const saveUser = async () => {
     const [firstName, lastName] = name.split(" ");
     const updatedUser = { ...user, firstName, lastName };
-    await client.updateUser(updatedUser);
+    await client.updateUserById(uid!, updatedUser); // Use updateUserById instead
     setUser(updatedUser);
     setEditing(false);
     onClose();
