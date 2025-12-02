@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaPencil } from "react-icons/fa6";
 import { FaCheck, FaUserCircle } from "react-icons/fa";
-import { FormControl } from "react-bootstrap"; // ADD THIS
+import { FormControl } from "react-bootstrap";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import * as client from "../../../Account/client";
@@ -15,12 +15,13 @@ export default function PeopleDetails({ uid, onClose }: { uid: string | null; on
   
   const [user, setUser] = useState<any>({});
   const [name, setName] = useState("");
+  const [role, setRole] = useState(""); // ADD THIS
   const [editing, setEditing] = useState(false);
   
   const saveUser = async () => {
     const [firstName, lastName] = name.split(" ");
-    const updatedUser = { ...user, firstName, lastName };
-    await client.updateUserById(uid!, updatedUser); // Use updateUserById instead
+    const updatedUser = { ...user, firstName, lastName, role }; // ADD role HERE
+    await client.updateUserById(uid!, updatedUser);
     setUser(updatedUser);
     setEditing(false);
     onClose();
@@ -30,6 +31,7 @@ export default function PeopleDetails({ uid, onClose }: { uid: string | null; on
     if (!uid) return;
     const user = await client.findUserById(uid);
     setUser(user);
+    setRole(user.role); // SET INITIAL ROLE
   };
   
   useEffect(() => {
@@ -78,7 +80,22 @@ export default function PeopleDetails({ uid, onClose }: { uid: string | null; on
         )}
       </div>
       
-      <b>Roles:</b> <span className="wd-roles">{user.role}</span> <br />
+      <b>Roles:</b>{" "}
+      {!editing && <span className="wd-roles">{user.role}</span>}
+      {editing && (
+        <select 
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="form-select w-75 wd-edit-role"
+        >
+          <option value="STUDENT">Student</option>
+          <option value="TA">TA</option>
+          <option value="FACULTY">Faculty</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      )}
+      <br />
+      
       <b>Login ID:</b> <span className="wd-login-id">{user.loginId}</span> <br />
       <b>Section:</b> <span className="wd-section">{user.section}</span> <br />
       <b>Total Activity:</b> <span className="wd-total-activity">{user.totalActivity}</span>
