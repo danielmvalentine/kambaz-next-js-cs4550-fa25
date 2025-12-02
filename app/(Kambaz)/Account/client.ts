@@ -42,7 +42,7 @@ export const profile = async () => {
 };
 
 export const updateUser = async (user: any) => {
-  const response = await axiosWithCredentials.put(`${USERS_API}/${user._id}`, user);
+  const response = await axiosWithCredentials.put("/profile", user);  // Changed to /profile
   return response.data;
 };
 
