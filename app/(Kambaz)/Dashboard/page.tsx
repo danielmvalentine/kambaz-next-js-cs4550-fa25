@@ -27,12 +27,16 @@ export default function Dashboard() {
 
   const fetchCourses = async () => {
     try {
+      console.log("Fetching my courses...");
       const myCourses = await client.findMyCourses();
+      console.log("My courses returned:", myCourses);
       dispatch(setCourses(myCourses));
       
       const all = await client.findAllCourses();
+      console.log("All courses returned:", all);
       setAllCourses(all);
     } catch (error: any) {
+      console.error("Fetch courses error:", error);
       if (error.response?.status === 401 || error.response?.status === 403) {
         router.push("/Account/Signin");
       }
@@ -59,10 +63,13 @@ export default function Dashboard() {
 
   const onEnrollInCourse = async (courseId: string) => {
     try {
-      await client.enrollInCourse(courseId);
-      fetchCourses();
+      console.log("Attempting to enroll in course:", courseId);
+      const result = await client.enrollInCourse(courseId);
+      console.log("Enrollment result:", result);
+      await fetchCourses();
     } catch (error) {
       console.error("Error enrolling in course:", error);
+      alert("Failed to enroll: " + error);
     }
   };
 
